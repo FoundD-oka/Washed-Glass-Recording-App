@@ -7,3 +7,36 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+/* Recordings container animations */
+.recordings-container {
+  transition: all 0.4s ease;
+}
+.recordings-header {
+  transition: transform 0.5s ease, margin-bottom 0.3s ease;
+}
+.collapsed-header {
+  transform: translateY(calc(100% - 50px)); /* Changed from 100vh-250px to be relative to container */
+  margin-bottom: 0;
+  position: absolute;
+  bottom: 70px; /* Position it above the footer */
+  width: calc(100% - 2rem);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  padding: 8px;
+  border-radius: 8px;
+  z-index: 10;
+}
+.recordings-list {
+  transition: opacity 0.3s ease, max-height 0.4s ease;
+}
+.recordings-list.visible {
+  opacity: 1;
+  max-height: 1000px;
+  display: block;
+}
+.recordings-list.hidden {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  display: none;
+}

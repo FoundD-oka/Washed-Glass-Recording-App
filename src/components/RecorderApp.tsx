@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import RecorderControls from './RecorderControls';
 import RecordingsList from './RecordingsList';
-import { FolderIcon, SettingsIcon, SearchIcon } from 'lucide-react';
+import { FolderIcon, SettingsIcon, SearchIcon, ChevronDownIcon } from 'lucide-react';
 import WaveformVisualizer from './WaveformVisualizer';
+import './RecorderApp.css';
 const RecorderApp = () => {
   const [recordings, setRecordings] = useState<{
     id: string;
@@ -37,6 +38,7 @@ const RecorderApp = () => {
   const [recordingTime, setRecordingTime] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isListExpanded, setIsListExpanded] = useState(true);
   const tabs = ['客先ヒアリング', '設計書のレビュー', 'マーケティング資料作成', '品質管理マニュアル更新'];
   // Simulate starting/stopping recording
   const toggleRecording = () => {
@@ -85,6 +87,10 @@ const RecorderApp = () => {
       name: newName
     } : recording));
   };
+  // Toggle recordings list visibility
+  const toggleListVisibility = () => {
+    setIsListExpanded(!isListExpanded);
+  };
   return <div className="w-full mx-auto flex flex-col h-screen max-w-[390px]">
       <div className="backdrop-blur-2xl bg-white/60 rounded-2xl shadow-xl overflow-hidden border border-white/50 flex-1 flex flex-col">
         {/* Main container with fixed height */}
@@ -124,17 +130,22 @@ const RecorderApp = () => {
             </div>
           </div>
           {/* Scrollable content area */}
-          <div className="flex-1 overflow-y-auto px-4">
-            <div className="mt-2">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-base font-medium text-gray-700">
-                  すべての録音
-                </h2>
+          <div className="flex-1 overflow-y-auto px-4 relative">
+            <div className={`mt-2 recordings-container ${isListExpanded ? 'expanded' : 'collapsed'}`}>
+              <div className={`flex items-center justify-between mb-3 recordings-header ${isListExpanded ? '' : 'collapsed-header'}`}>
+                <button className="flex items-center gap-1 focus:outline-none" onClick={toggleListVisibility}>
+                  <ChevronDownIcon className={`h-4 w-4 text-gray-700 transition-transform duration-300 ${isListExpanded ? '' : '-rotate-90'}`} />
+                  <h2 className="text-base font-medium text-gray-700">
+                    すべての録音
+                  </h2>
+                </button>
                 <span className="text-xs text-gray-500">
                   {recordings.length} recordings
                 </span>
               </div>
-              <RecordingsList recordings={recordings} onDeleteRecording={handleDeleteRecording} onRenameRecording={handleRenameRecording} />
+              <div className={`recordings-list ${isListExpanded ? 'visible' : 'hidden'}`}>
+                <RecordingsList recordings={recordings} onDeleteRecording={handleDeleteRecording} onRenameRecording={handleRenameRecording} />
+              </div>
             </div>
             {/* Add padding at the bottom to ensure content doesn't get hidden behind the footer */}
             <div className="pb-20"></div>
