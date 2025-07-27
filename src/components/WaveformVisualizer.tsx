@@ -9,7 +9,7 @@ const WaveformVisualizer = () => {
     // Create bars
     for (let i = 0; i < barCount; i++) {
       const bar = document.createElement('div');
-      bar.className = 'absolute bottom-0 w-1.5 rounded-full bg-gradient-to-t from-gray-500 to-gray-400';
+      bar.className = 'absolute bottom-0 w-1.5 rounded-full bg-gradient-to-t from-orange-500 to-orange-400';
       bar.style.left = `${i / barCount * 100}%`;
       bar.style.opacity = '0.8';
       container.appendChild(bar);
