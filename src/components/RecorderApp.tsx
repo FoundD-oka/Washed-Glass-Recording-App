@@ -101,11 +101,8 @@ const RecorderApp = () => {
         <div className="flex flex-col h-full">
           <div className="p-4">
             <div className="flex items-center gap-2 mb-3">
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-1.5 rounded-lg">
-                <div className="h-5 w-5 text-white" />
-              </div>
               <h1 className="text-xl font-semibold bg-gradient-to-r from-orange-600 to-orange-700 inline-block text-transparent bg-clip-text">
-                Reco AI
+                RECO AI
               </h1>
             </div>
             <div className="relative mb-3">
@@ -126,7 +123,7 @@ const RecorderApp = () => {
             </div>
             <div className="relative h-24 mb-4">
               {isRecording ? <WaveformVisualizer /> : <div className="w-full h-full flex items-center justify-center text-gray-300">
-                  <span className="text-xs">選択された"要約の型"で要約します</span>
+                  <span className="text-xs">選択された型で要約します</span>
                 </div>}
             </div>
             <div className={`text-xl font-medium mb-3 text-center ${isRecording ? 'text-gray-800' : 'text-gray-300'}`}>

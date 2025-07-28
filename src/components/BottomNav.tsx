@@ -29,7 +29,7 @@ const BottomNav: React.FC<BottomNavProps> = ({
           </span>
         </div>
         {/* Record button */}
-        {active === 'home' && <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-0">
+        {active === 'home' && <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-0 z-50">
             <RecorderControls isRecording={isRecording} recordingTime={recordingTime} toggleRecording={toggleRecording} formatTime={formatTime} />
           </div>}
         {/* Settings button */}
