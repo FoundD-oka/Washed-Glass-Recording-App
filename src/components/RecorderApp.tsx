@@ -101,11 +101,8 @@ const RecorderApp = () => {
         <div className="flex flex-col h-full">
           <div className="p-4">
             <div className="flex items-center gap-2 mb-3">
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-1.5 rounded-lg">
-                <div className="h-5 w-5 text-white" />
-              </div>
               <h1 className="text-xl font-semibold bg-gradient-to-r from-orange-600 to-orange-700 inline-block text-transparent bg-clip-text">
-                Reco AI
+                RECO AI
               </h1>
             </div>
             <div className="relative mb-3">
@@ -115,7 +112,7 @@ const RecorderApp = () => {
               <input type="text" className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg bg-white/70 focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm" placeholder="検索..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
             <div className="mb-1">
-              <h2 className="text-xs text-gray-500">テーマ</h2>
+              <h2 className="text-xs text-gray-500">要約の型</h2>
             </div>
             <div className="mb-4 overflow-x-auto no-scrollbar">
               <div className="flex space-x-2 min-w-max">
@@ -126,7 +123,7 @@ const RecorderApp = () => {
             </div>
             <div className="relative h-24 mb-4">
               {isRecording ? <WaveformVisualizer /> : <div className="w-full h-full flex items-center justify-center text-gray-300">
-                  <span className="text-xs">選択されたテーマで録音</span>
+                  <span className="text-xs">選択された型で要約します</span>
                 </div>}
             </div>
             <div className={`text-xl font-medium mb-3 text-center ${isRecording ? 'text-gray-800' : 'text-gray-300'}`}>

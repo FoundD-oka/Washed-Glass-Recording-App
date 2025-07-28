@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sheet from './ui/Sheet';
 import Button from './ui/Button';
-import { Mail, Database, ExternalLink, CheckIcon } from 'lucide-react';
+import { Mail, Database, ExternalLink } from 'lucide-react';
 import UrlInputModal from './UrlInputModal';
 import RecordingSelectionModal from './RecordingSelectionModal';
 import { useToast } from './ui/ToastProvider';
@@ -15,7 +15,7 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
 }) => {
   const [isUrlInputOpen, setIsUrlInputOpen] = useState(false);
   const [isRecordingSelectionOpen, setIsRecordingSelectionOpen] = useState(false);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<string | null>(null);
+  const [workflowType, setWorkflowType] = useState<string>('');
   const {
     showToast
   } = useToast();
@@ -25,8 +25,12 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
   const closeUrlInput = () => {
     setIsUrlInputOpen(false);
   };
-  const handleWorkflowSelect = (workflowId: string) => {
-    setSelectedWorkflow(workflowId);
+  const handleWorkflowSelect = (type: string) => {
+    if (type === 'email') {
+      setWorkflowType('お礼メールの作成');
+    } else if (type === 'salesforce') {
+      setWorkflowType('Salesforceへ登録');
+    }
     setIsRecordingSelectionOpen(true);
   };
   const handleRecordingSelect = () => {
@@ -42,7 +46,7 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
           </h2>
           {/* Workflow options */}
           <div className="space-y-3">
-            <div className={`p-4 backdrop-blur-sm rounded-lg border shadow-sm flex items-center cursor-pointer transition-colors ${selectedWorkflow === 'email' ? 'bg-orange-50 border-orange-300' : 'bg-white/70 border-gray-200 hover:bg-orange-50/50'}`} onClick={() => handleWorkflowSelect('email')}>
+            <div className="p-4 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm flex items-center cursor-pointer transition-colors hover:bg-orange-50/50" onClick={() => handleWorkflowSelect('email')}>
               <div className="mr-3 p-2 bg-orange-100 rounded-full">
                 <Mail className="h-5 w-5 text-orange-500" />
               </div>
@@ -54,11 +58,8 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
                   会話内容から自動的にお礼メールを作成します
                 </div>
               </div>
-              {selectedWorkflow === 'email' && <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                  <CheckIcon className="h-4 w-4 text-white" />
-                </div>}
             </div>
-            <div className={`p-4 backdrop-blur-sm rounded-lg border shadow-sm flex items-center cursor-pointer transition-colors ${selectedWorkflow === 'salesforce' ? 'bg-orange-50 border-orange-300' : 'bg-white/70 border-gray-200 hover:bg-orange-50/50'}`} onClick={() => handleWorkflowSelect('salesforce')}>
+            <div className="p-4 backdrop-blur-sm rounded-lg border border-gray-200 shadow-sm flex items-center cursor-pointer transition-colors hover:bg-orange-50/50" onClick={() => handleWorkflowSelect('salesforce')}>
               <div className="mr-3 p-2 bg-orange-100 rounded-full">
                 <Database className="h-5 w-5 text-orange-500" />
               </div>
@@ -70,9 +71,6 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
                   会話内容をSalesforceに自動登録します
                 </div>
               </div>
-              {selectedWorkflow === 'salesforce' && <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-                  <CheckIcon className="h-4 w-4 text-white" />
-                </div>}
             </div>
           </div>
           <div className="fixed bottom-8 left-0 right-0 px-4 max-w-[390px] mx-auto">
@@ -84,7 +82,7 @@ const WorkflowSheet: React.FC<WorkflowSheetProps> = ({
         </div>
       </Sheet>
       <UrlInputModal isOpen={isUrlInputOpen} onClose={closeUrlInput} />
-      <RecordingSelectionModal isOpen={isRecordingSelectionOpen} onClose={() => setIsRecordingSelectionOpen(false)} onConfirm={handleRecordingSelect} workflowType={selectedWorkflow === 'email' ? 'お礼メールの作成' : 'Salesforceへ登録'} />
+      <RecordingSelectionModal isOpen={isRecordingSelectionOpen} onClose={() => setIsRecordingSelectionOpen(false)} onConfirm={handleRecordingSelect} workflowType={workflowType} />
     </>;
 };
 export default WorkflowSheet;
