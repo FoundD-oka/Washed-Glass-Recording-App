@@ -142,16 +142,15 @@ const RecordingItem: React.FC<RecordingItemProps> = ({
               <h3 className="text-gray-800 font-medium text-sm truncate">
                 {recording.name}
               </h3>
-              <div className="text-xs text-gray-500 flex items-center gap-1">
-                <span>{recording.duration}</span>
-                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                <span className="truncate">{recording.date}</span>
-              </div>
-              {recording.tag && <div className="mt-1">
-                  <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="text-xs text-gray-500">
+                  {recording.duration}
+                </div>
+                <div className="text-xs text-gray-500">{recording.date}</div>
+                {recording.tag && <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
                     {recording.tag}
-                  </span>
-                </div>}
+                  </span>}
+              </div>
             </div>}
         </div>
         <div className="flex items-center gap-1 relative z-10">

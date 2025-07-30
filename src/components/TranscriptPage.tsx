@@ -179,7 +179,7 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
                 編集
               </>}
           </Button>
-          <Button className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white hover:bg-blue-600" size="md" onClick={handleCreateNewSummary} disabled={isEditing}>
+          <Button className="flex-1 flex items-center justify-center gap-2 !bg-blue-500 text-white !hover:bg-blue-600" size="md" onClick={handleCreateNewSummary} disabled={isEditing}>
             <PlusIcon className="h-4 w-4" />
             新しい要約を作る
           </Button>
