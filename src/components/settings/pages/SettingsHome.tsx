@@ -32,7 +32,7 @@ const SettingsHome: React.FC<SettingsHomeProps> = ({
       </Section>
       <Section title="その他">
         <ListTile destructive label="キャッシュの削除" onClick={onClearCache} />
-        <ListTile label="RECO AI について" value="ver0.01" href="/settings/about" onClick={() => onNavigate('/settings/about')} />
+        <ListTile label="RELOG AI について" value="ver0.01" href="/settings/about" onClick={() => onNavigate('/settings/about')} />
       </Section>
     </div>;
 };

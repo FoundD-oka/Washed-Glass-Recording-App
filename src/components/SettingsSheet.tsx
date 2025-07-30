@@ -65,7 +65,7 @@ function getPageTitle(path: string): string {
     case '/settings/language':
       return '表示言語';
     case '/settings/about':
-      return 'RECO AI について';
+              return 'RELOG AI について';
     default:
       return '設定';
   }

@@ -118,7 +118,7 @@ const RecorderApp = () => {
           <div className="p-4">
             <div className="flex items-center gap-2 mb-3">
               <h1 className="text-xl font-semibold bg-gradient-to-r from-orange-600 to-orange-700 inline-block text-transparent bg-clip-text">
-                RECO AI
+                RELOG AI
               </h1>
             </div>
             <div className="relative mb-3">

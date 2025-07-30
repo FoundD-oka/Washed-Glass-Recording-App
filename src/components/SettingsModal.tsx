@@ -54,7 +54,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* その他 */}
         <Section title="その他">
           <ListTile destructive label="キャッシュの削除" trailing={<Trash2 size={16} className="text-red-500" />} />
-          <ListTile label="RECO AI について" value="ver0.01" trailing={<ChevronRight size={16} />} />
+                      <ListTile label="RELOG AI について" value="ver0.01" trailing={<ChevronRight size={16} />} />
         </Section>
       </div>
     </Modal>;
