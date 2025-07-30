@@ -125,7 +125,7 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
   }
   return <div className="w-full mx-auto flex flex-col h-screen max-w-[390px] relative">
       <div className="backdrop-blur-2xl bg-white/60 rounded-2xl shadow-xl overflow-hidden border border-white/50 flex-1 flex flex-col">
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full pb-[120px]">
           {/* ヘッダー */}
           <div className="p-4 border-b border-gray-200">
             <div className="flex items-center gap-3 mb-2">
@@ -158,31 +158,29 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
             </div>
           </div>
 
-          {/* コンテンツ - 下部に余白を追加 */}
-          <div className="flex-1 overflow-y-auto p-4 pb-28">
+          {/* コンテンツ */}
+          <div className="flex-1 overflow-y-auto p-4">
             {isEditing ? <textarea className="w-full h-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm" value={activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''} onChange={handleTabContentChange} /> : <div className="text-sm text-gray-700 whitespace-pre-wrap">
                 {activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''}
               </div>}
           </div>
-        </div>
-      </div>
 
-      {/* フッター - 固定位置 */}
-      <div className="fixed bottom-[90px] left-0 right-0 max-w-[390px] mx-auto z-10">
-        <div className="p-4 border-t border-gray-200 flex gap-3">
-          <Button variant="outline" size="md" className="flex-1 flex items-center justify-center gap-2" onClick={handleEditToggle}>
-            {isEditing ? <>
-                <SaveIcon className="h-4 w-4" />
-                保存
-              </> : <>
-                <EditIcon className="h-4 w-4" />
-                編集
-              </>}
-          </Button>
-          <Button className="flex-1 flex items-center justify-center gap-2 !bg-blue-500 text-white !hover:bg-blue-600" size="md" onClick={handleCreateNewSummary} disabled={isEditing}>
-            <PlusIcon className="h-4 w-4" />
-            新しい要約を作る
-          </Button>
+          {/* フッター */}
+          <div className="p-4 border-t border-gray-200 flex gap-3 bg-white/80 backdrop-blur-sm fixed bottom-[90px] left-0 right-0 max-w-[390px] mx-auto z-10">
+            <Button variant="outline" size="md" className="flex-1 flex items-center justify-center gap-2" onClick={handleEditToggle}>
+              {isEditing ? <>
+                  <SaveIcon className="h-4 w-4" />
+                  保存
+                </> : <>
+                  <EditIcon className="h-4 w-4" />
+                  編集
+                </>}
+            </Button>
+            <Button className="flex-1 flex items-center justify-center gap-2 bg-blue-500 text-white hover:bg-blue-600" size="md" onClick={handleCreateNewSummary} disabled={isEditing}>
+              <PlusIcon className="h-4 w-4" />
+              新しい要約を作る
+            </Button>
+          </div>
         </div>
       </div>
 
