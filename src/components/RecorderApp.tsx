@@ -7,7 +7,6 @@ import './RecorderApp.css';
 import BottomNav from './BottomNav';
 import SettingsSheet from './SettingsSheet';
 import WorkflowSheet from './WorkflowSheet';
-import TranscriptPage from './TranscriptPage';
 const RecorderApp = () => {
   const [recordings, setRecordings] = useState<{
     id: string;
@@ -45,7 +44,6 @@ const RecorderApp = () => {
   const [isListExpanded, setIsListExpanded] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
-  const [selectedRecordingId, setSelectedRecordingId] = useState<string | null>(null);
   const tabs = ['会議', '商談', '1on1', 'ミーティング', '初回商談', 'プレゼン'];
   const toggleRecording = () => {
     if (!isRecording) {
@@ -89,9 +87,6 @@ const RecorderApp = () => {
       name: newName
     } : recording));
   };
-  const handleSelectRecording = (id: string) => {
-    setSelectedRecordingId(id);
-  };
   const toggleListVisibility = () => {
     setIsListExpanded(!isListExpanded);
   };
@@ -101,17 +96,6 @@ const RecorderApp = () => {
   const toggleWorkflow = () => {
     setIsWorkflowOpen(!isWorkflowOpen);
   };
-  const getSelectedRecording = () => {
-    return recordings.find(recording => recording.id === selectedRecordingId) || null;
-  };
-  const handleBackFromTranscript = () => {
-    setSelectedRecordingId(null);
-  };
-  // メインアプリか議事録ページかを表示
-  if (selectedRecordingId) {
-    const selectedRecording = getSelectedRecording();
-    return <TranscriptPage recording={selectedRecording} onBack={handleBackFromTranscript} />;
-  }
   return <div className="w-full mx-auto flex flex-col h-screen max-w-[390px]">
       <div className="backdrop-blur-2xl bg-white/60 rounded-2xl shadow-xl overflow-hidden border border-white/50 flex-1 flex flex-col">
         <div className="flex flex-col h-full">
@@ -160,7 +144,7 @@ const RecorderApp = () => {
                 </span>
               </div>
               <div className={`recordings-list ${isListExpanded ? 'visible' : 'hidden'}`}>
-                <RecordingsList recordings={recordings} onDeleteRecording={handleDeleteRecording} onRenameRecording={handleRenameRecording} onSelectRecording={handleSelectRecording} />
+                <RecordingsList recordings={recordings} onDeleteRecording={handleDeleteRecording} onRenameRecording={handleRenameRecording} />
               </div>
             </div>
             <div className="pb-20"></div>

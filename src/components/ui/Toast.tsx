@@ -1,28 +1,23 @@
 import React, { useEffect } from 'react';
 import { CheckCircleIcon, XCircleIcon, InfoIcon, XIcon } from 'lucide-react';
-import Button from './Button';
 interface ToastProps {
   message: string;
   type: 'success' | 'error' | 'info';
   onClose: () => void;
   duration?: number;
-  action?: () => void;
 }
 const Toast: React.FC<ToastProps> = ({
   message,
   type = 'info',
   onClose,
-  duration = 3000,
-  action
+  duration = 3000
 }) => {
   useEffect(() => {
-    if (!action) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [onClose, duration, action]);
+    const timer = setTimeout(() => {
+      onClose();
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [onClose, duration]);
   const getIcon = () => {
     switch (type) {
       case 'success':
@@ -43,29 +38,16 @@ const Toast: React.FC<ToastProps> = ({
         return 'bg-gradient-to-r from-blue-500 to-blue-600';
     }
   };
-  const handleAction = () => {
-    if (action) {
-      action();
-      onClose();
-    }
-  };
-  return <div className={`${getBackgroundColor()} text-white px-4 py-3 rounded-lg shadow-lg max-w-[300px] animate-fade-in pointer-events-auto`} style={{
+  return <div className={`${getBackgroundColor()} text-white px-4 py-3 rounded-lg shadow-lg max-w-[300px] animate-fade-in flex items-center justify-between pointer-events-auto`} style={{
     animationDuration: '0.3s'
   }}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {getIcon()}
-          <span className="text-sm font-medium">{message}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          {action && <Button variant="outline" size="sm" className="text-xs text-white border-white/30 hover:bg-white/20 py-0.5 px-2" onClick={handleAction}>
-              OK
-            </Button>}
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-white/20 transition-colors">
-            <XIcon className="h-4 w-4 text-white" />
-          </button>
-        </div>
+      <div className="flex items-center gap-2">
+        {getIcon()}
+        <span className="text-sm font-medium">{message}</span>
       </div>
+      <button onClick={onClose} className="p-1 rounded-full hover:bg-white/20 transition-colors">
+        <XIcon className="h-4 w-4 text-white" />
+      </button>
     </div>;
 };
 export default Toast;
