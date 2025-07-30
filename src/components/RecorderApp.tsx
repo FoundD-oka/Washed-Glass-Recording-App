@@ -8,6 +8,7 @@ import BottomNav from './BottomNav';
 import SettingsSheet from './SettingsSheet';
 import WorkflowSheet from './WorkflowSheet';
 import TranscriptPage from './TranscriptPage';
+import RecordingTypeModal from './RecordingTypeModal';
 const RecorderApp = () => {
   const [recordings, setRecordings] = useState<{
     id: string;
@@ -46,25 +47,34 @@ const RecorderApp = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isWorkflowOpen, setIsWorkflowOpen] = useState(false);
   const [selectedRecordingId, setSelectedRecordingId] = useState<string | null>(null);
+  const [isTypeModalOpen, setIsTypeModalOpen] = useState(false);
+  const [selectedRecordingType, setSelectedRecordingType] = useState<string>('');
   const tabs = ['会議', '商談', '1on1', 'ミーティング', '初回商談', 'プレゼン'];
-  const toggleRecording = () => {
-    if (!isRecording) {
-      setIsRecording(true);
-      setRecordingTime(0);
-      // In a real app, we would start the actual recording here
-    } else {
-      setIsRecording(false);
-      // In a real app, we would stop the recording and save it
-      const newRecording = {
-        id: Date.now().toString(),
-        url: '#',
-        name: `New Recording ${recordings.length + 1}`,
-        duration: formatTime(recordingTime),
-        date: 'Just now',
-        tag: tabs[activeTab]
-      };
-      setRecordings([newRecording, ...recordings]);
-    }
+  const handleStartRecording = () => {
+    setIsTypeModalOpen(true);
+  };
+
+  const handleSelectRecordingType = (type: string) => {
+    setSelectedRecordingType(type);
+    setIsTypeModalOpen(false);
+    setIsRecording(true);
+    setRecordingTime(0);
+    // In a real app, we would start the actual recording here
+  };
+
+  const handleStopRecording = () => {
+    setIsRecording(false);
+    // In a real app, we would stop the recording and save it
+    const newRecording = {
+      id: Date.now().toString(),
+      url: '#',
+      name: `New Recording ${recordings.length + 1}`,
+      duration: formatTime(recordingTime),
+      date: 'Just now',
+      tag: selectedRecordingType || tabs[activeTab]
+    };
+    setRecordings([newRecording, ...recordings]);
+    setSelectedRecordingType('');
   };
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -165,11 +175,17 @@ const RecorderApp = () => {
             </div>
             <div className="pb-20"></div>
           </div>
-          <BottomNav active="home" onHomeClick={toggleWorkflow} onSettingsClick={toggleSettings} isRecording={isRecording} recordingTime={recordingTime} toggleRecording={toggleRecording} formatTime={formatTime} />
+          <BottomNav active="home" onHomeClick={toggleWorkflow} onSettingsClick={toggleSettings} isRecording={isRecording} recordingTime={recordingTime} onStartRecording={handleStartRecording} onStopRecording={handleStopRecording} formatTime={formatTime} />
         </div>
       </div>
       <SettingsSheet open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <WorkflowSheet open={isWorkflowOpen} onClose={() => setIsWorkflowOpen(false)} />
+      <RecordingTypeModal 
+        isOpen={isTypeModalOpen} 
+        onClose={() => setIsTypeModalOpen(false)} 
+        onSelectType={handleSelectRecordingType}
+        types={tabs}
+      />
     </div>;
 };
 export default RecorderApp;

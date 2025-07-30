@@ -26,6 +26,8 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [transcriptText, setTranscriptText] = useState(getDummyTranscript(recording?.tag));
+  // メインタブの管理 (文字起こし vs 要約)
+  const [mainTabIndex, setMainTabIndex] = useState(0); // 0: 要約, 1: 文字起こし
   // 要約タブを動的に管理
   const [summaryTabs, setSummaryTabs] = useState<SummaryTab[]>([]);
   const {
@@ -115,6 +117,14 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
       setSummaryTabs(updatedTabs);
     }
   };
+
+  const handleMainTabChange = (tabIndex: number) => {
+    setMainTabIndex(tabIndex);
+    // 文字起こしタブに切り替える時は編集モードを終了
+    if (tabIndex === 1 && isEditing) {
+      setIsEditing(false);
+    }
+  };
   if (!recording) {
     return <div className="w-full mx-auto flex flex-col h-screen max-w-[390px] items-center justify-center">
         <div className="text-gray-500">録音が見つかりません</div>
@@ -149,42 +159,77 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
             </div>
           </div>
 
-          {/* タブ - 要約の型に基づいて動的に表示 */}
+          {/* タブ */}
           <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
             <div className="flex min-w-max">
-              {summaryTabs.map((tab, index) => <button key={tab.id} className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTabIndex === index ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500 hover:text-gray-700'}`} onClick={() => setActiveTabIndex(index)}>
+              {/* 要約タブ */}
+              {summaryTabs.map((tab, index) => (
+                <button 
+                  key={tab.id} 
+                  className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${mainTabIndex === 0 && activeTabIndex === index ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500 hover:text-gray-700'}`} 
+                  onClick={() => {
+                    setMainTabIndex(0);
+                    setActiveTabIndex(index);
+                  }}
+                >
                   {tab.type}
-                </button>)}
+                </button>
+              ))}
+              {/* 文字起こしタブ */}
+              <button 
+                className={`px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${mainTabIndex === 1 ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500 hover:text-gray-700'}`}
+                onClick={() => handleMainTabChange(1)}
+              >
+                文字起こし
+              </button>
             </div>
           </div>
 
           {/* コンテンツ - 下部に余白を追加 */}
           <div className="flex-1 overflow-y-auto p-4 pb-28">
-            {isEditing ? <textarea className="w-full h-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm" value={activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''} onChange={handleTabContentChange} /> : <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                {activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''}
-              </div>}
+            {mainTabIndex === 0 ? (
+              // 要約コンテンツ
+              isEditing ? (
+                <textarea 
+                  className="w-full h-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm" 
+                  value={activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''} 
+                  onChange={handleTabContentChange} 
+                />
+              ) : (
+                <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                  {activeTabIndex < summaryTabs.length ? summaryTabs[activeTabIndex].content : ''}
+                </div>
+              )
+            ) : (
+              // 文字起こしコンテンツ
+              <div className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+                {transcriptText}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* フッター - 固定位置 */}
-      <div className="fixed bottom-[90px] left-0 right-0 max-w-[390px] mx-auto z-10">
-        <div className="p-4 border-t border-gray-200 flex gap-3">
-          <Button variant="outline" size="md" className="flex-1 flex items-center justify-center gap-2" onClick={handleEditToggle}>
-            {isEditing ? <>
-                <SaveIcon className="h-4 w-4" />
-                保存
-              </> : <>
-                <EditIcon className="h-4 w-4" />
-                編集
-              </>}
-          </Button>
-          <Button className="flex-1 flex items-center justify-center gap-2 !bg-blue-500 text-white !hover:bg-blue-600" size="md" onClick={handleCreateNewSummary} disabled={isEditing}>
-            <PlusIcon className="h-4 w-4" />
-            新しい要約を作る
-          </Button>
+      {/* フッター - 固定位置 - 要約タブでのみ表示 */}
+      {mainTabIndex === 0 && (
+        <div className="fixed bottom-[90px] left-0 right-0 max-w-[390px] mx-auto z-10">
+          <div className="p-4 border-t border-gray-200 flex gap-3">
+            <Button variant="outline" size="md" className="flex-1 flex items-center justify-center gap-2" onClick={handleEditToggle}>
+              {isEditing ? <>
+                  <SaveIcon className="h-4 w-4" />
+                  保存
+                </> : <>
+                  <EditIcon className="h-4 w-4" />
+                  編集
+                </>}
+            </Button>
+            <Button className="flex-1 flex items-center justify-center gap-2 !bg-blue-500 text-white !hover:bg-blue-600" size="md" onClick={handleCreateNewSummary}>
+              <PlusIcon className="h-4 w-4" />
+              新しい要約を作る
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* BottomNav - 最下部に固定 */}
       <div className="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto z-20">
@@ -196,97 +241,79 @@ const TranscriptPage: React.FC<TranscriptPageProps> = ({
 function getDummyTranscript(tag?: string): string {
   switch (tag) {
     case '会議':
-      return `日時：2023年5月15日 14:30～16:00
-参加者：田中、佐藤、鈴木、高橋
-【議題1：第2四半期の売上目標について】
-田中：前四半期の結果を踏まえて、今四半期の目標設定をしたいと思います。
-佐藤：前四半期は目標の95%達成でした。今回はより現実的な数字にすべきでしょうか。
-鈴木：いいえ、むしろ高い目標を設定して、新しい施策を打ち出すべきだと思います。
-高橋：同意します。特に新製品のローンチがあるので、それに合わせた数字を考えましょう。
-【議題2：新製品の進捗状況】
-田中：開発チームから最新情報をお願いします。
-鈴木：予定通り7月の発売に向けて進んでいます。テスト段階に入りました。
-佐藤：マーケティング資料はいつ頃共有されますか？
-鈴木：来週末には第一稿をお見せできると思います。
-高橋：販売チームへのトレーニングも計画しないといけませんね。
-【議題3：人事採用について】
-田中：営業部門の増員について議論したいと思います。
-佐藤：現在3名の候補者と最終面接まで進んでいます。来週中に決定できそうです。
-高橋：早めに決定して、新製品ローンチ前にトレーニングを完了させたいですね。
-【次回会議】
-日時：2023年5月29日 14:30～16:00
-場所：会議室A`;
+      return `田中：えー、それでは始めさせていただきます。今日はお忙しい中お時間いただいてありがとうございます。
+佐藤：よろしくお願いします。
+田中：前四半期の結果なんですけども、えー、95%の達成ということで、まあまあ良い数字だったんですが、今四半期どうしましょうかね。
+佐藤：そうですね、前回がたまたま良かったのかもしれないので、もう少し現実的な...
+鈴木：いやいや、でも逆にもっと攻めていくべきじゃないですか？新しい施策もありますし。
+高橋：そうですね、新製品の件もありますから。
+田中：新製品の話が出ましたけど、鈴木さん、進捗いかがですか？
+鈴木：はい、えー、7月のリリースに向けて順調に進んでまして、今テスト段階に入ってます。
+佐藤：マーケティングの資料とかはいつごろ...？
+鈴木：あー、来週末には第一稿をお見せできると思います。
+高橋：販売チームのトレーニングも考えないと。
+田中：そうですね。それと採用の件なんですが、佐藤さん、どうでしょう？
+佐藤：3名と最終面接までいってまして、来週中には決定できそうです。
+高橋：早めに決めて、新製品の前にトレーニング終わらせたいですね。
+田中：分かりました。じゃあ次回は...29日の2時半からということで。
+佐藤：会議室Aでよろしいですか？
+田中：はい、よろしくお願いします。`;
     case '商談':
-      return `日時：2023年5月12日 10:15～11:30
-顧客：ABC株式会社
-担当者：山田様（購買部長）、井上様（IT部門）
-当社：佐藤（営業）、鈴木（技術）
-【商談内容】
-佐藤：本日は貴重なお時間をいただきありがとうございます。前回のご提案に対するご質問があるとのことでしたが。
-山田：はい、導入コストと運用コストについてもう少し詳しく知りたいです。
-佐藤：承知しました。初期導入費用は500万円、年間の保守費用は100万円となります。
-井上：カスタマイズの範囲によって費用は変わりますか？
-鈴木：基本機能内のカスタマイズは初期費用に含まれています。特殊な機能追加は別途お見積りとなります。
-山田：競合他社と比較して、御社の強みは何ですか？
-佐藤：24時間365日のサポート体制と、導入後の定期的なコンサルティングが含まれている点です。
-井上：導入期間はどれくらいを想定していますか？
-鈴木：標準的なケースで約2ヶ月です。御社の場合、既存システムとの連携も考慮して3ヶ月程度を見ています。
-【決定事項】
-・詳細な見積書を今週中に送付
-・技術的な詳細資料を井上様宛てに送付
-・来週、役員向けプレゼンの日程調整
-【次回アポイント】
-日時：2023年5月22日 13:00～
-場所：ABC株式会社 会議室`;
+      return `佐藤：本日はお忙しい中、お時間いただきましてありがとうございます。
+山田：こちらこそ、ありがとうございます。
+佐藤：前回お話しさせていただいた件で、ご質問があるということでしたが...
+山田：はい、えっと、導入コストの件なんですけども、もう少し詳しく教えていただけますか？
+佐藤：はい、承知いたしました。初期導入が500万円で、年間の保守が100万円という形になります。
+井上：あの、カスタマイズとかで金額って変わったりします？
+鈴木：基本的な機能の範囲内でしたら初期費用に含まれてまして、特殊なご要望ですと別途という形になりますね。
+山田：他社さんと比べて、どういったところが強みになりますか？
+佐藤：そうですね、24時間365日のサポートと、導入後も定期的にコンサルティングさせていただくところですかね。
+井上：導入ってどれくらいかかるもんなんですか？
+鈴木：通常ですと2ヶ月程度なんですが、御社の場合既存システムとの連携もございますので、3ヶ月ぐらいを想定しております。
+山田：分かりました。詳細な見積もりをいただけますか？
+佐藤：はい、今週中にお送りいたします。
+井上：技術的な資料もお願いします。
+鈴木：承知いたしました。井上様宛てにお送りします。
+山田：それと、来週役員に向けてプレゼンしていただけますか？
+佐藤：はい、日程調整させていただきます。22日の1時からはいかがでしょうか？
+山田：問題ございません。会議室でお待ちしております。`;
     case '1on1':
-      return `日時：2023年5月10日 15:00～15:45
-上司：田中
-メンバー：佐藤
-【最近の業務状況】
-佐藤：先月担当した新規プロジェクトは予定通り完了しました。顧客からも良い評価をいただいています。
-田中：素晴らしいですね。特に工夫した点はありますか？
-佐藤：チーム内のコミュニケーションを密にして、週2回の進捗確認ミーティングを設けました。それが効果的でした。
-田中：その取り組みは他のプロジェクトにも活かせそうですね。
-【課題・悩み】
-佐藤：現在担当している複数のプロジェクトのスケジュール管理が難しいと感じています。
-田中：具体的にはどんな点が難しいですか？
-佐藤：締切が近いプロジェクトが複数重なると、優先順位の判断に迷うことがあります。
-田中：なるほど。プロジェクト間の優先順位付けのフレームワークを一緒に考えましょう。また、必要に応じてリソースの再配分も検討します。
-【キャリア開発】
-田中：今後のキャリアについてどのように考えていますか？
-佐藤：将来的にはプロジェクトマネージャーとしてのスキルを磨きたいと考えています。
-田中：それは良いですね。次のプロジェクトではサブリーダーとして参加してもらうことを検討しましょう。また、社内のPM研修も来月開催されますので参加をお勧めします。
-【アクションアイテム】
-1. 佐藤：プロジェクト優先順位付けの案を作成
-2. 田中：PM研修の申込み手続きをサポート
-3. 田中：次期プロジェクトでのサブリーダー役割について検討
-【次回1on1】
-日時：2023年5月24日 15:00～`;
+      return `田中：お疲れ様です。今日もよろしくお願いします。
+佐藤：よろしくお願いします。
+田中：先月のプロジェクトはどうでしたか？
+佐藤：はい、無事予定通り完了できました。お客さんからも結構良い評価をいただけて。
+田中：それは良かったですね。何か工夫されたことありました？
+佐藤：そうですね、チーム内のコミュニケーションを意識して、週2回ぐらい進捗の確認をするようにしました。
+田中：なるほど、それは良いアプローチですね。他のプロジェクトでも使えそうですし。
+佐藤：ありがとうございます。ただ、最近複数のプロジェクトを抱えてて、スケジュール管理が結構大変で...
+田中：あー、そうですか。具体的にはどんなところが？
+佐藤：締切が重なっちゃった時に、どれを優先すべきか判断に迷うことがあって。
+田中：確かにそれは難しいですね。優先順位をつけるためのフレームワークを一緒に考えてみましょうか。リソースの調整も必要に応じて検討しますし。
+佐藤：ありがとうございます。それと、将来のことなんですが、プロジェクトマネージャーのスキルを身につけたいと思ってまして。
+田中：いいですね。次のプロジェクトでサブリーダーをやってもらうのはどうでしょう？来月PM研修もあるので参加してみませんか？
+佐藤：はい、ぜひお願いします。
+田中：じゃあ優先順位の件は佐藤さんに案を作ってもらって、研修の申込みは私がサポートします。次回は24日の3時からで大丈夫ですか？
+佐藤：はい、よろしくお願いします。`;
     default:
-      return `日時：2023年5月15日 13:00～14:30
-参加者：佐藤、田中、鈴木、山田
-【議題1：プロジェクトの進捗状況】
-佐藤：現在の進捗状況について報告します。フェーズ1は予定通り完了しました。
-田中：素晴らしいです。何か課題はありましたか？
-佐藤：リソース配分に少し苦労しましたが、チーム全体で調整して乗り越えました。
-鈴木：フェーズ2はスケジュール通り来週から開始予定です。
-【議題2：顧客からのフィードバック】
-山田：先週の顧客ミーティングでいくつかフィードバックをいただきました。
-田中：どのような内容でしたか？
-山田：主にUIの使いやすさについてと、追加機能のリクエストがありました。
-佐藤：それらの対応優先度を決めて、開発計画に組み込む必要がありますね。
-【議題3：今後のスケジュール】
-鈴木：修正点を踏まえた新しいスケジュール案を作成しました。
-佐藤：納期への影響はありますか？
-鈴木：現時点では納期は守れる見込みですが、余裕は少なくなっています。
-田中：リスク対策も考えておく必要がありますね。
-【決定事項】
-1. フェーズ2は予定通り来週月曜日から開始
-2. 顧客フィードバックの優先順位付けを今週中に完了
-3. リスク対策として予備リソースを確保
-【次回ミーティング】
-日時：2023年5月22日 13:00～
-場所：会議室B`;
+      return `佐藤：お疲れ様です。それでは始めさせていただきます。
+田中：よろしくお願いします。
+佐藤：まず進捗の報告なんですが、フェーズ1は無事予定通り完了しました。
+田中：お疲れ様でした。何か課題とかありました？
+佐藤：リソースの配分でちょっと苦労しましたけど、チーム全体で調整して何とか。
+鈴木：フェーズ2は来週から開始ということで大丈夫ですかね？
+田中：はい、予定通りで。
+山田：先週お客さんとミーティングしたんですが、フィードバックをいくつかいただいてまして。
+田中：どんな内容でした？
+山田：UIの使いやすさの件と、あと追加機能の要望もありました。
+佐藤：それって優先順位つけて開発計画に入れないといけませんね。
+鈴木：修正を踏まえたスケジュール案を作ってみたんですが...
+佐藤：納期に影響しますか？
+鈴木：今のところは大丈夫だと思うんですが、余裕はなくなりましたね。
+田中：リスク対策も考えておいた方が良さそうですね。
+佐藤：分かりました。フェーズ2は来週月曜から、フィードバックの優先順位は今週中に、あと予備リソースも確保ということで。
+田中：次回は22日の1時からで良いですか？
+鈴木：会議室Bで大丈夫です。
+佐藤：よろしくお願いします。`;
   }
 }
 // ダミーの要約テキストを生成

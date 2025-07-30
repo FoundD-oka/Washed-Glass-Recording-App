@@ -29,8 +29,8 @@ const Modal: React.FC<ModalProps> = ({
     }
   }, [isOpen]);
   if (!isOpen && !isAnimating) return null;
-  return <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`} onClick={onClose}>
-      <div className={`w-full max-w-[390px] max-h-[90vh] bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 transition-all duration-300 ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'}`} onClick={e => e.stopPropagation()}>
+  return <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`} onClick={onClose}>
+      <div className={`w-full max-w-[320px] max-h-[70vh] bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 transition-all duration-300 ${isOpen ? 'scale-100 translate-y-0' : 'scale-95 translate-y-8'}`} onClick={e => e.stopPropagation()}>
         {title && <div className="flex items-center justify-between border-b border-gray-200 p-4">
             <h2 className="text-lg font-medium text-gray-800">{title}</h2>
             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
