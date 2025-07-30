@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronRight, Trash2 } from 'lucide-react';
 import Modal from './ui/Modal';
 import Section from './settings/Section';
@@ -15,6 +15,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose
 }) => {
+  const [wifiOnly, setWifiOnly] = useState(true);
+  const [autoUpload, setAutoUpload] = useState(true);
   return <Modal isOpen={isOpen} onClose={onClose} title="設定">
       <div className="pb-4">
         {/* アカウント情報 */}
@@ -43,7 +45,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
         <Divider />
         {/* 一般設定 */}
         <Section title="一般設定">
-          <ListTile label="Wifi接続時のみアップロード" trailing={<Switch defaultChecked />} />
+          <ListTile label="Wifi接続時のみアップロード" trailing={<Switch defaultChecked={wifiOnly} onChange={setWifiOnly} />} />
+          <ListTile label="自動アップロード" trailing={<Switch defaultChecked={autoUpload} onChange={setAutoUpload} />} />
           <ListTile label="表示言語" value="日本語" trailing={<ChevronRight size={16} />} />
           <ListTile label="文字サイズ" value="12pt" trailing={<ChevronRight size={16} />} />
         </Section>

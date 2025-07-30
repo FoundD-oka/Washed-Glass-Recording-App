@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Section from '../Section';
 import ListTile from '../ListTile';
 import Switch from '../../ui/Switch';
@@ -10,6 +10,8 @@ const SettingsHome: React.FC<SettingsHomeProps> = ({
   onNavigate,
   onClearCache = () => {}
 }) => {
+  const [wifiOnly, setWifiOnly] = useState(true);
+  const [autoUpload, setAutoUpload] = useState(true);
   return <div className="pb-16">
       <Section title="アカウント情報">
         <ListTile label="アカウント名" value="Link AI" href="/settings/account-name" onClick={() => onNavigate('/settings/account-name')} />
@@ -21,7 +23,10 @@ const SettingsHome: React.FC<SettingsHomeProps> = ({
       </Section>
       <Section title="一般設定">
         <ListTile label="Wifi接続時のみアップロード">
-          <Switch defaultChecked />
+          <Switch defaultChecked={wifiOnly} onChange={setWifiOnly} />
+        </ListTile>
+        <ListTile label="自動アップロード">
+          <Switch defaultChecked={autoUpload} onChange={setAutoUpload} />
         </ListTile>
         <ListTile label="表示言語" value="日本語" href="/settings/language" onClick={() => onNavigate('/settings/language')} />
       </Section>
