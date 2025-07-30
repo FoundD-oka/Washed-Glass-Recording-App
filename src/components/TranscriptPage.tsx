@@ -294,7 +294,7 @@ function getDummySummary(tag?: string): string {
   switch (tag) {
     case '会議':
       return `【要約：第2四半期戦略会議】
-■ 主要決定事項
+■ 決定事項
 ・第2四半期の売上目標：前四半期比10%増
 ・新製品ローンチ：7月予定（開発は予定通り進行中）
 ・営業部門の増員：3名を来週中に最終決定予定
